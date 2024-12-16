@@ -1,7 +1,6 @@
-# Light Professional Theme
 [theme]
-primaryColor = "#007bff"
-backgroundColor = "#ffffff"
-secondaryBackgroundColor = "#f8f9fa"
-textColor = "#000000"
-font = "sans serif"
+primaryColor="#FF4B4B"
+backgroundColor="#FFFFFF"
+secondaryBackgroundColor="#F0F2F6"
+textColor="#31333F"
+font="sans serif"
