@@ -4,3 +4,7 @@ backgroundColor="#FFFFFF"
 secondaryBackgroundColor="#F0F2F6"
 textColor="#31333F"
 font="sans serif"
+
+# Sidebar theme customization
+sidebarBackgroundColor="#2c3e50"  # Dark background color for the sidebar
+sidebarTextColor="white"  # White text color for sidebar items

@@ -6,48 +6,144 @@ from plotly.subplots import make_subplots
 
 st.set_page_config(
     page_title="Analyzer by Crickonnect",
-    page_icon="🏏", # Optional, add your own icon
-    layout="wide"  # Set the layout to wide mode
+    page_icon="🏏", 
+    layout="wide" 
 )
 
-st.markdown("""
-    <style>
-        /* Expander Header */
-        .streamlit-expanderHeader {
-            background-color: black !important;
-            color: white !important;
-            font-weight: bold;
-        }
 
-        /* Expander Content */
-        .streamlit-expanderContent {
-            background-color: black !important;
-            color: white !important;
-        }
-
-        /* Metric Labels */
-        .streamlit-metricsLabel {
-            color: white !important;
-        }
-
-        /* Metric Values */
-        .streamlit-metricsValue {
-            color: white !important;
-        }
-
-        /* Expander icon color */
-        .streamlit-expanderHeader .stToggle:before {
-            color: white !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
 
 
 # Load Data
-st.title("Young Blood Cricket Club")
-st.subheader("Insights That Sharpen the Edge")
-st.sidebar.header("Upload Your Data")
-uploaded_file = st.sidebar.file_uploader("Upload a CSV file", type=["csv"])
+st.markdown("<h1 style='color: black; font-size:36px;'>Young Blood Cricket Club</h1>", unsafe_allow_html=True)
+# st.subheader("Insights That Sharpen the Edge")
+
+
+
+st.markdown(
+    """
+    <style>
+    /* Sidebar background with blur effect */
+    .stSidebar {
+        min-width: 300px !important;
+        max-width: 300px !important;
+        background-color: black;  /* Semi-transparent background */
+  
+    }
+
+    /* Set the font color to white for the sidebar content */
+    .stSidebar .sidebar-content {
+        color: white;  /* Text color */
+    }
+
+    /* Set the title (h1) color to white inside the sidebar */
+    .stSidebar h1 {
+        color: white !important;  /* Title color in the sidebar */
+        font-size: 32px !important;
+        padding-bottom: 0px !important;
+    }
+
+    /* Set the color of markdown text */
+    .stSidebar .stMarkdown {
+        color: white !important;  /* Markdown text color */
+    }
+
+    /* Sidebar button color */
+    .stSidebar .stButton button {
+        background-color: #FF5733;  /* Button background color */
+        color: white;  /* Button text color */
+        border-radius: 5px;  /* Rounded corners for buttons */
+        padding: 10px;
+    }
+    .st-emotion-cache-1mw54nq p{
+        color: red;
+    }
+    /* Sidebar file uploader button color */
+    .stSidebar .stFileUploader input[type='file'] {
+        background-color: #FF5733;  /* Customize file upload button color */
+        color: white;  /* File upload button text color */
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    """
+    <style>
+    .st-emotion-cache-taue2i {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+        border-radius: 5px;
+        padding: 20px 40px !important;
+        border: 1px solid white;
+    }
+    .st-emotion-cache-zaw6nw {
+        color: black !important;
+        border-radius: 4px !important;
+        width: 150px !important;
+        margin-top: 8px !important;
+    }
+    .st-emotion-cache-zaw6nw:hover {
+        background-color: white !important;
+        color: black !important;
+        border: 1px solid black !important;
+    }
+    .st-emotion-cache-1aehpvj {
+        color: white !important;
+    }
+    .st-emotion-cache-1v45yng .es2srfl9 {
+        color: white !important;
+    }
+    .st-emotion-cache-qsoh6x {
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px !important;
+        fill: black !important;
+        background-color: white !important;
+        border: 1px solid white !important;
+        border-radius: 40px !important;
+    }
+    .st-c8 {
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px !important;
+    }
+    .st-emotion-cache-ocsh0s {
+        margin-top: 50px !important;
+        width: 340px !important;
+        height: 50px !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
+# Sidebar content
+with st.sidebar:
+    # Display Brand Logo (Add your image path)
+    # st.image("path_to_logo.png", width=150)
+
+    # Display Brand Name
+    st.title("Crickonnect")
+
+    # Add a short description
+    st.write("Knock`em out!")
+    
+    # Create the hidden file input (we are using the same ID as the label's `for` attribute)
+    uploaded_file = st.file_uploader("", type=["csv"], key="file-upload", label_visibility="hidden")
+    
+    # if uploaded_file is not None:
+    #     st.write("File uploaded successfully!")
+    # Add more content as needed
+   
+
+
+
+    # Add a selectbox for navigation options
+    # selected_option = st.selectbox("Choose an analysis", ["Batting Stats", "Bowling Stats", "Team Analysis"])
+
+    # st.write(f"You selected: {selected_option}")
+
+# st.sidebar.header("Upload Your Data")
+# uploaded_file = st.sidebar.file_uploader("Upload a CSV file", type=["csv"])
 
 
 if uploaded_file is not None:
@@ -61,26 +157,7 @@ if uploaded_file is not None:
     # Filter data for the selected player
     player_data = data[data['Player'] == player_choice]
 
-    # Add custom CSS for dark background
-    st.markdown("""
-    <style>
-        .streamlit-expanderHeader {
-            background-color: black !important;
-            color: white !important;
-        }
-        .streamlit-expanderContent {
-            background-color: black !important;
-        }
-        .streamlit-metricsLabel {
-            color: white !important;
-        }
-        .streamlit-metricsValue {
-            color: white !important;
-        }
-    </style>
-    """, unsafe_allow_html=True)
 
-    # Wrap the content in the styled container
     st.markdown(f"""
         <div class="stats-container">
             <div class="stats-header">
@@ -94,60 +171,198 @@ if uploaded_file is not None:
     total_innings = len(player_data)  # or use player_data['Out'].sum() if you have 'Out' column
     batting_avg = round(total_runs / total_innings, 2) if total_innings > 0 else 0
 
-    # Batting Stats in one line
-    with st.expander("Batting Performance", expanded=True):
-        col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
-        with col1:
-            st.metric("Matches", len(player_data))
-        with col2:
-            st.metric("Runs", player_data['Runs'].sum())
-        with col3:
-            st.metric("Balls", player_data['Balls'].sum())
-        with col4:
-            st.metric("Average", round(player_data['Runs'].sum() / len(player_data), 2))
-        with col5:
-            st.metric("Strike Rate", round(player_data['SR'].mean(), 2))
-        with col6:
-            st.metric("4s", player_data['4s'].sum())
-        with col7:
-            st.metric("6s", player_data['6s'].sum())
+st.markdown(
+    """
+    <style>
+    .small-subheader {
+        font-size: 16px; /* Set the desired font size */
+        font-weight: bold; /* Optional: Adjust weight */
+        color: #333; /* Optional: Change text color */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-    total_overs_bowled = player_data['O'].sum()
+with st.container():
+    # Apply custom class to style the subheader
+    st.markdown(f'<p class="small-subheader">Played {len(player_data)} Matches</p>', unsafe_allow_html=True)
 
+
+def calculate_batsman_points_per_match(player_data):
+    points_per_match = []
+    for index, row in player_data.iterrows():
+        total_runs = row['Runs']
+        total_4s = row['4s']
+        total_6s = row['6s']
+        player_points = total_runs
+        
+        if total_runs >= 30:
+            player_points += 5
+        if total_runs >= 50:
+            player_points += 10
+        
+        player_points += total_4s * 1  
+        player_points += total_6s * 2  
+        
+        points_per_match.append(player_points)
+    
+    return points_per_match
+
+# Define function for calculating total points
+def calculate_total_batsman_points(player_data):
+    total_points = 0
+    for index, row in player_data.iterrows():
+        total_runs = row['Runs']
+        total_4s = row['4s']
+        total_6s = row['6s']
+        player_points = total_runs
+        
+        if total_runs >= 30:
+            player_points += 5
+        if total_runs >= 50:
+            player_points += 10
+        
+        player_points += total_4s * 1  
+        player_points += total_6s * 2 
+        
+        total_points += player_points
+    
+    return total_points
+
+# Now use both functions inside your Streamlit code
+with st.expander("Stats", expanded=True):
+    # Batting Performance
+    points_per_match = calculate_batsman_points_per_match(player_data)
+
+    # Calculate the average points per match (if needed)
+    average_points_per_match = sum(points_per_match) / len(points_per_match) if points_per_match else 0
+
+    # Calculate the total points for the player
+    total_points = calculate_total_batsman_points(player_data)
+
+    # Display the heading with the calculated average points per match
+    st.markdown(
+        f"<h3 style='font-size: 18px; color: #27ae60; padding-bottom:30px;'>With the bat</h3>"
+        f"<p style='font-size: 16px; color: #27ae60;'>Total Points: {total_points}</p>",
+        unsafe_allow_html=True
+    )
+
+    
+    col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+    
+    # Define font size for stats
+    heading_font_size = "16px"  # Customize this as needed for heading
+    stat_font_size = "26px"  # Customize this as needed for stats
+
+    with col1:
+        st.markdown(
+            f'<p style="font-size: {heading_font_size}; color: #555;">Runs</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["Runs"].sum():,.0f}</p>',
+            unsafe_allow_html=True
+        )
+    with col2:
+        st.markdown(
+            f'<p style="font-size: {heading_font_size}; color: #555;">Balls</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["Balls"].sum():,.0f}</p>',
+            unsafe_allow_html=True
+        )
+    with col3:
+        st.markdown(
+            f'<p style="font-size: {heading_font_size}; color: #555;">Average</p><p style="font-size: {stat_font_size}; color: #000;">{round(player_data["Runs"].sum() / len(player_data), 2)}</p>',
+            unsafe_allow_html=True
+        )
+    with col4:
+        st.markdown(
+            f'<p style="font-size: {heading_font_size}; color: #555;">Strike Rate</p><p style="font-size: {stat_font_size}; color: #000;">{round(player_data["SR"].mean(), 2)}</p>',
+            unsafe_allow_html=True
+        )
+    with col5:
+        st.markdown(
+            f'<p style="font-size: {heading_font_size}; color: #555;">4s</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["4s"].sum():,.0f}</p>',
+            unsafe_allow_html=True
+        )
+    with col6:
+        st.markdown(
+            f'<p style="font-size: {heading_font_size}; color: #555;">6s</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["6s"].sum():,.0f}</p>',
+            unsafe_allow_html=True
+        )
+    with col7:
+        st.markdown(
+            f'<p style="font-size: {heading_font_size}; color: #555;">High Score</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["Runs"].max():,.0f}</p>',
+            unsafe_allow_html=True
+        )
+    
+    st.markdown("---")  
+    
     # Bowling Performance
-    with st.expander("Bowling Performance", expanded=True):
+    if player_data["O"].sum() > 0:
+        st.markdown(
+            "<h3 style='font-size: 18px; color: #27ae60; padding-bottom:30px'>With the ball</h3>",
+            unsafe_allow_html=True
+        )
+        
         col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
+
         with col1:
-            st.metric("Total Overs", round(total_overs_bowled, 2))
+            st.markdown(
+                f'<p style="font-size: {heading_font_size}; color: #555;">Total Overs</p><p style="font-size: {stat_font_size}; color: #000; padding-bottom: 24px">{round(player_data["O"].sum(), 2)}</p>',
+                unsafe_allow_html=True
+            )
         with col2:
-            st.metric("Dot Balls", player_data['0s'].sum())
+            st.markdown(
+                f'<p style="font-size: {heading_font_size}; color: #555;">Dot Balls</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["0s"].sum():,.0f}</p>',
+                unsafe_allow_html=True
+            )
         with col3:
-            st.metric("Maidens", player_data['M'].sum())
+            st.markdown(
+                f'<p style="font-size: {heading_font_size}; color: #555;">Maidens</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["M"].sum():,.0f}</p>',
+                unsafe_allow_html=True
+            )
         with col4:
-            st.metric("Runs", player_data['R'].sum())
+            st.markdown(
+                f'<p style="font-size: {heading_font_size}; color: #555;">Runs</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["R"].sum():,.0f}</p>',
+                unsafe_allow_html=True
+            )
         with col5:
-            st.metric("Wickets", player_data['W'].sum())
+            st.markdown(
+                f'<p style="font-size: {heading_font_size}; color: #555;">Wickets</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["W"].sum():,.0f}</p>',
+                unsafe_allow_html=True
+            )
         with col6:
-            st.metric("Economy", round(player_data['Eco'].mean(), 2))
+            st.markdown(
+                f'<p style="font-size: {heading_font_size}; color: #555;">Economy</p><p style="font-size: {stat_font_size}; color: #000;">{round(player_data["Eco"].mean(), 2)}</p>',
+                unsafe_allow_html=True
+            )
         with col7:
-            st.metric("Wides", player_data['WD'].sum())
+            st.markdown(
+                f'<p style="font-size: {heading_font_size}; color: #555;">Wides</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["WD"].sum():,.0f}</p>',
+                unsafe_allow_html=True
+            )
         with col8:
-            st.metric("No Balls", player_data['NB'].sum())
+            st.markdown(
+                f'<p style="font-size: {heading_font_size}; color: #555;">No Balls</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["NB"].sum():,.0f}</p>',
+                unsafe_allow_html=True
+            )
+    else:
+        st.markdown(
+            "<p style='font-size: 16px; color: #555;'>This player has not bowled in any match.</p>",
+            unsafe_allow_html=True
+        )
+
 
 
 
     # 1. Runs per Match
-    # st.write("#### Runs Scored in Each Match")
     fig = go.Figure()
     
-    match_numbers = list(range(1, len(player_data) + 1))  # Create integer match numbers
+    match_numbers = list(range(1, len(player_data) + 1))  
     
     # Add Bar chart
     fig.add_trace(
         go.Bar(
-            x=match_numbers,  # Use integer match numbers
+            x=match_numbers, 
             y=player_data['Runs'],
             name="Runs",
+            text=player_data['Runs'],
             hovertemplate="Match: %{x}<br>Runs: %{y}<extra></extra>",
             opacity=0.3,
             marker_color='skyblue'
@@ -155,7 +370,7 @@ if uploaded_file is not None:
     )
 
     
-col1, col2, col3 = st.columns(3)  # Create 3 columns
+col1, col2, col3 = st.columns(3) 
 
 with col1:
     batting_button = st.button("Batting Analysis")
@@ -174,15 +389,15 @@ def calculate_batsman_points_per_match(player_data):
         total_6s = row['6s']
         player_points = total_runs
         
-        # Additional points
+  
         if total_runs >= 30:
             player_points += 5
         if total_runs >= 50:
             player_points += 10
         
-        # Points for boundaries
-        player_points += total_4s * 1  # 1 point for each 4
-        player_points += total_6s * 2  # 2 points for each 6
+    
+        player_points += total_4s * 1  
+        player_points += total_6s * 2  
         
         points_per_match.append(player_points)
     
@@ -191,7 +406,7 @@ def calculate_batsman_points_per_match(player_data):
 # Batting Analysis
 # Batting Analysis
 if batting_button:
-    # Filter data for the selected player
+ 
     player_data = data[data['Player'] == player_choice]
 
     # 1. Runs Scored per Match
@@ -217,6 +432,7 @@ if batting_button:
         yaxis_title="Runs",
         hovermode='x unified',
         xaxis=dict(tickmode='linear', tick0=1, dtick=1)  # Force integer ticks
+        
     )
 
     # Show the plot
@@ -313,7 +529,7 @@ if batting_button:
             mode='markers',
             marker=dict(
                 size=12,
-                color=match_numbers,  # Use integer match numbers
+                color=match_numbers,  
                 colorscale='Viridis',
                 showscale=True,
                 colorbar=dict(
@@ -526,34 +742,23 @@ if team_analysis:
         go.Bar(
             x=wickets_by_player.index,
             y=wickets_by_player.values,
-            marker_color='#1f77b4',  # Blue color
-            text=wickets_by_player.values,  # Add value labels
-            textposition='auto',  # Show labels on bars
+            marker_color='#1f77b4',  
+            text=wickets_by_player.values,  
+            textposition='auto',  
         )
     )
 
     # Update layout
     fig_team_wickets.update_layout(
         title='Total Wickets Taken by Each Player',
-        height=400,
         xaxis_title="Players",
         yaxis_title="Total Wickets",
         showlegend=False,
         bargap=0.3,
-        bargroupgap=0.10,  # Angle player names for better readability
-        margin=dict(b=100),  # Add bottom margin for rotated labels
-        yaxis=dict(
-            tickmode='linear',
-            tick0=0,
-            dtick=1  # Show whole numbers for wickets
-        )
+        bargroupgap=0.10,  
     )
 
     # Show the figure
-    st.plotly_chart(fig_team_wickets, use_container_width=True)
+    st.plotly_chart(fig_team_wickets)
 
-    # Optional: Add a data table below the chart
-    # st.write("Wickets Breakdown")
-    # wickets_df = wickets_by_player.reset_index()
-    # wickets_df.columns = ['Player', 'Total Wickets']
-    # st.dataframe(wickets_df, hide_index=True)
+
