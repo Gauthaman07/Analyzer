@@ -4,6 +4,104 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+
+
+
+
+
+def calculate_batsman_points_per_match(player_data):
+    points_per_match = []
+    for index, row in player_data.iterrows():
+        total_runs = row['Runs']
+        total_4s = row['4s']
+        total_6s = row['6s']
+        player_points = total_runs
+        
+        if total_runs >= 30:
+            player_points += 5
+        if total_runs >= 50:
+            player_points += 10
+        
+        player_points += total_4s * 1  
+        player_points += total_6s * 2  
+        
+        points_per_match.append(player_points)
+    
+    return points_per_match
+
+# Define function for calculating total points
+def calculate_total_batsman_points(player_data):
+    total_points = 0
+    for index, row in player_data.iterrows():
+        total_runs = row['Runs']
+        total_4s = row['4s']
+        total_6s = row['6s']
+        player_points = total_runs
+        
+        if total_runs >= 30:
+            player_points += 5
+        if total_runs >= 50:
+            player_points += 10
+        
+        player_points += total_4s * 1  
+        player_points += total_6s * 2 
+        
+        total_points += player_points
+    
+    return total_points
+
+def calculate_batsman_points_per_match(player_data):
+    points_per_match = []
+    for index, row in player_data.iterrows():
+        total_runs = row['Runs']
+        total_4s = row['4s']
+        total_6s = row['6s']
+        player_points = total_runs
+        
+  
+        if total_runs >= 30:
+            player_points += 5
+        if total_runs >= 50:
+            player_points += 10
+        
+    
+        player_points += total_4s * 1  
+        player_points += total_6s * 2  
+        
+        points_per_match.append(player_points)
+    
+    return points_per_match
+
+def calculate_bowler_points_per_match(player_data):
+    points_per_match = []
+    for index, row in player_data.iterrows():
+        wickets = row['W']
+        maidens = row['M']
+        economy = row['Eco']  # Assuming you have an 'Eco' column for economy rate
+        player_points = 0
+        
+        # Points for wickets
+        player_points += wickets  # 1 point per wicket
+        if wickets >= 3:
+            player_points += 5  # Additional 5 points for 3 wickets
+        if wickets >= 5:
+            player_points += 10  # Additional 10 points for 5 wickets
+        
+        # Points for maidens
+        player_points += maidens * 5  # 5 points for each maiden
+        
+        # Points for economy
+        if economy <= 3:
+            player_points += 2  # 2 points for economy <= 3
+        if economy > 8:
+            player_points += 2  # 2 points for economy > 8
+        
+        points_per_match.append(player_points)
+    
+    return points_per_match
+
+
+
 st.set_page_config(
     page_title="Analyzer by Crickonnect",
     page_icon="🏏", 
@@ -116,48 +214,33 @@ st.markdown(
 )
 
 
-# Sidebar content
 with st.sidebar:
-    # Display Brand Logo (Add your image path)
-    # st.image("path_to_logo.png", width=150)
-
     # Display Brand Name
     st.title("Crickonnect")
-
-    # Add a short description
-    st.write("Knock`em out!")
+    st.write("Knock 'em out!")
     
-    # Create the hidden file input (we are using the same ID as the label's `for` attribute)
+    # File uploader
     uploaded_file = st.file_uploader("", type=["csv"], key="file-upload", label_visibility="hidden")
-    
-    # if uploaded_file is not None:
-    #     st.write("File uploaded successfully!")
-    # Add more content as needed
-   
 
+    # File upload status
+    if uploaded_file:
+        st.success("File uploaded successfully!")
+    else:
+        st.warning("Please upload a CSV file to proceed.")
 
-
-    # Add a selectbox for navigation options
-    # selected_option = st.selectbox("Choose an analysis", ["Batting Stats", "Bowling Stats", "Team Analysis"])
-
-    # st.write(f"You selected: {selected_option}")
-
-# st.sidebar.header("Upload Your Data")
-# uploaded_file = st.sidebar.file_uploader("Upload a CSV file", type=["csv"])
-
-
-if uploaded_file is not None:
+# Check if file is uploaded
+if uploaded_file:
+    # Load data
     data = pd.read_csv(uploaded_file)
-    
-    # Batting Performance
-    # st.subheader("Player Performance - Batting")
+
+    # Player selection
     players = data['Player'].unique()
     player_choice = st.selectbox("Select a Player", players)
 
     # Filter data for the selected player
     player_data = data[data['Player'] == player_choice]
 
-
+    # Player-specific stats container
     st.markdown(f"""
         <div class="stats-container">
             <div class="stats-header">
@@ -166,208 +249,162 @@ if uploaded_file is not None:
         </div>
     """, unsafe_allow_html=True)
 
-    # Calculate batting average
-    total_runs = player_data['Runs'].sum()
-    total_innings = len(player_data)  # or use player_data['Out'].sum() if you have 'Out' column
-    batting_avg = round(total_runs / total_innings, 2) if total_innings > 0 else 0
+    # Batting stats
+    if not player_data.empty:
+        total_runs = player_data['Runs'].sum()
+        total_innings = len(player_data)
+        batting_avg = round(total_runs / total_innings, 2) if total_innings > 0 else 0
 
-st.markdown(
-    """
-    <style>
+        st.markdown(
+            f'<p class="small-subheader">Played {len(player_data)} Matches</p>', 
+            unsafe_allow_html=True
+        )
+    else:
+        st.warning(f"No data available for {player_choice}.")
+else:
+    st.info("Upload a file to view player data.")
+
+# Apply custom styles globally
+st.markdown("""
+<style>
     .small-subheader {
-        font-size: 16px; /* Set the desired font size */
-        font-weight: bold; /* Optional: Adjust weight */
-        color: #333; /* Optional: Change text color */
+        font-size: 16px; 
+        font-weight: bold; 
+        color: #333; 
     }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+</style>
+""", unsafe_allow_html=True)
 
-with st.container():
-    # Apply custom class to style the subheader
-    st.markdown(f'<p class="small-subheader">Played {len(player_data)} Matches</p>', unsafe_allow_html=True)
-
-
-def calculate_batsman_points_per_match(player_data):
-    points_per_match = []
-    for index, row in player_data.iterrows():
-        total_runs = row['Runs']
-        total_4s = row['4s']
-        total_6s = row['6s']
-        player_points = total_runs
-        
-        if total_runs >= 30:
-            player_points += 5
-        if total_runs >= 50:
-            player_points += 10
-        
-        player_points += total_4s * 1  
-        player_points += total_6s * 2  
-        
-        points_per_match.append(player_points)
-    
-    return points_per_match
-
-# Define function for calculating total points
-def calculate_total_batsman_points(player_data):
-    total_points = 0
-    for index, row in player_data.iterrows():
-        total_runs = row['Runs']
-        total_4s = row['4s']
-        total_6s = row['6s']
-        player_points = total_runs
-        
-        if total_runs >= 30:
-            player_points += 5
-        if total_runs >= 50:
-            player_points += 10
-        
-        player_points += total_4s * 1  
-        player_points += total_6s * 2 
-        
-        total_points += player_points
-    
-    return total_points
-
-# Now use both functions inside your Streamlit code
-with st.expander("Stats", expanded=True):
-    # Batting Performance
-    points_per_match = calculate_batsman_points_per_match(player_data)
-
-    # Calculate the average points per match (if needed)
-    average_points_per_match = sum(points_per_match) / len(points_per_match) if points_per_match else 0
-
-    # Calculate the total points for the player
-    total_points = calculate_total_batsman_points(player_data)
-
-    # Display the heading with the calculated average points per match
-    st.markdown(
-        f"<h3 style='font-size: 18px; color: #27ae60; padding-bottom:30px;'>With the bat</h3>"
-        f"<p style='font-size: 16px; color: #27ae60;'>Total Points: {total_points}</p>",
-        unsafe_allow_html=True
-    )
-
-    
-    col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
-    
-    # Define font size for stats
-    heading_font_size = "16px"  # Customize this as needed for heading
-    stat_font_size = "26px"  # Customize this as needed for stats
-
-    with col1:
-        st.markdown(
-            f'<p style="font-size: {heading_font_size}; color: #555;">Runs</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["Runs"].sum():,.0f}</p>',
-            unsafe_allow_html=True
+# Stats expander section
+if uploaded_file and not player_data.empty:
+    with st.expander("Stats", expanded=True):
+        # Batting performance
+        points_per_match = calculate_batsman_points_per_match(player_data)
+        average_points_per_match = (
+            sum(points_per_match) / len(points_per_match) if points_per_match else 0
         )
-    with col2:
+        total_points = calculate_total_batsman_points(player_data)
+
         st.markdown(
-            f'<p style="font-size: {heading_font_size}; color: #555;">Balls</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["Balls"].sum():,.0f}</p>',
-            unsafe_allow_html=True
+            f"<h3 style='font-size: 18px; color: #27ae60;'>With the bat</h3>"
+            f"<p style='font-size: 16px; color: #27ae60;'>Total Points: {total_points}</p>",
+            unsafe_allow_html=True,
         )
-    with col3:
-        st.markdown(
-            f'<p style="font-size: {heading_font_size}; color: #555;">Average</p><p style="font-size: {stat_font_size}; color: #000;">{round(player_data["Runs"].sum() / len(player_data), 2)}</p>',
-            unsafe_allow_html=True
-        )
-    with col4:
-        st.markdown(
-            f'<p style="font-size: {heading_font_size}; color: #555;">Strike Rate</p><p style="font-size: {stat_font_size}; color: #000;">{round(player_data["SR"].mean(), 2)}</p>',
-            unsafe_allow_html=True
-        )
-    with col5:
-        st.markdown(
-            f'<p style="font-size: {heading_font_size}; color: #555;">4s</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["4s"].sum():,.0f}</p>',
-            unsafe_allow_html=True
-        )
-    with col6:
-        st.markdown(
-            f'<p style="font-size: {heading_font_size}; color: #555;">6s</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["6s"].sum():,.0f}</p>',
-            unsafe_allow_html=True
-        )
-    with col7:
-        st.markdown(
-            f'<p style="font-size: {heading_font_size}; color: #555;">High Score</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["Runs"].max():,.0f}</p>',
-            unsafe_allow_html=True
-        )
-    
-    st.markdown("---")  
-    
-    # Bowling Performance
-    if player_data["O"].sum() > 0:
-        st.markdown(
-            "<h3 style='font-size: 18px; color: #27ae60; padding-bottom:30px'>With the ball</h3>",
-            unsafe_allow_html=True
-        )
-        
-        col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
+
+        # Display batting stats in columns
+        col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+        heading_font_size = "16px"
+        stat_font_size = "26px"
 
         with col1:
             st.markdown(
-                f'<p style="font-size: {heading_font_size}; color: #555;">Total Overs</p><p style="font-size: {stat_font_size}; color: #000; padding-bottom: 24px">{round(player_data["O"].sum(), 2)}</p>',
-                unsafe_allow_html=True
+                f'<p style="font-size: {heading_font_size}; color: #555;">Runs</p>'
+                f'<p style="font-size: {stat_font_size}; color: #000;">{player_data["Runs"].sum():,.0f}</p>',
+                unsafe_allow_html=True,
             )
         with col2:
             st.markdown(
-                f'<p style="font-size: {heading_font_size}; color: #555;">Dot Balls</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["0s"].sum():,.0f}</p>',
-                unsafe_allow_html=True
+                f'<p style="font-size: {heading_font_size}; color: #555;">Balls</p>'
+                f'<p style="font-size: {stat_font_size}; color: #000;">{player_data["Balls"].sum():,.0f}</p>',
+                unsafe_allow_html=True,
             )
         with col3:
             st.markdown(
-                f'<p style="font-size: {heading_font_size}; color: #555;">Maidens</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["M"].sum():,.0f}</p>',
-                unsafe_allow_html=True
+                f'<p style="font-size: {heading_font_size}; color: #555;">Average</p>'
+                f'<p style="font-size: {stat_font_size}; color: #000;">{batting_avg}</p>',
+                unsafe_allow_html=True,
             )
         with col4:
             st.markdown(
-                f'<p style="font-size: {heading_font_size}; color: #555;">Runs</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["R"].sum():,.0f}</p>',
-                unsafe_allow_html=True
+                f'<p style="font-size: {heading_font_size}; color: #555;">Strike Rate</p>'
+                f'<p style="font-size: {stat_font_size}; color: #000;">{round(player_data["SR"].mean(), 2)}</p>',
+                unsafe_allow_html=True,
             )
         with col5:
             st.markdown(
-                f'<p style="font-size: {heading_font_size}; color: #555;">Wickets</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["W"].sum():,.0f}</p>',
-                unsafe_allow_html=True
+                f'<p style="font-size: {heading_font_size}; color: #555;">4s</p>'
+                f'<p style="font-size: {stat_font_size}; color: #000;">{player_data["4s"].sum():,.0f}</p>',
+                unsafe_allow_html=True,
             )
         with col6:
             st.markdown(
-                f'<p style="font-size: {heading_font_size}; color: #555;">Economy</p><p style="font-size: {stat_font_size}; color: #000;">{round(player_data["Eco"].mean(), 2)}</p>',
-                unsafe_allow_html=True
+                f'<p style="font-size: {heading_font_size}; color: #555;">6s</p>'
+                f'<p style="font-size: {stat_font_size}; color: #000;">{player_data["6s"].sum():,.0f}</p>',
+                unsafe_allow_html=True,
             )
         with col7:
             st.markdown(
-                f'<p style="font-size: {heading_font_size}; color: #555;">Wides</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["WD"].sum():,.0f}</p>',
-                unsafe_allow_html=True
+                f'<p style="font-size: {heading_font_size}; color: #555;">High Score</p>'
+                f'<p style="font-size: {stat_font_size}; color: #000;">{player_data["Runs"].max():,.0f}</p>',
+                unsafe_allow_html=True,
             )
-        with col8:
+
+        st.markdown("---")
+
+        # Bowling Performance
+        if player_data["O"].sum() > 0:
             st.markdown(
-                f'<p style="font-size: {heading_font_size}; color: #555;">No Balls</p><p style="font-size: {stat_font_size}; color: #000;">{player_data["NB"].sum():,.0f}</p>',
-                unsafe_allow_html=True
+                "<h3 style='font-size: 18px; color: #27ae60;'>With the ball</h3>",
+                unsafe_allow_html=True,
             )
-    else:
-        st.markdown(
-            "<p style='font-size: 16px; color: #555;'>This player has not bowled in any match.</p>",
-            unsafe_allow_html=True
-        )
+
+            col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
+
+            with col1:
+                st.markdown(
+                    f'<p style="font-size: {heading_font_size}; color: #555;">Total Overs</p>'
+                    f'<p style="font-size: {stat_font_size}; color: #000;">{round(player_data["O"].sum(), 2)}</p>',
+                    unsafe_allow_html=True,
+                )
+            with col2:
+                st.markdown(
+                    f'<p style="font-size: {heading_font_size}; color: #555;">Dot Balls</p>'
+                    f'<p style="font-size: {stat_font_size}; color: #000;">{player_data["0s"].sum():,.0f}</p>',
+                    unsafe_allow_html=True,
+                )
+            with col3:
+                st.markdown(
+                    f'<p style="font-size: {heading_font_size}; color: #555;">Maidens</p>'
+                    f'<p style="font-size: {stat_font_size}; color: #000;">{player_data["M"].sum():,.0f}</p>',
+                    unsafe_allow_html=True,
+                )
+            with col4:
+                st.markdown(
+                    f'<p style="font-size: {heading_font_size}; color: #555;">Runs</p>'
+                    f'<p style="font-size: {stat_font_size}; color: #000;">{player_data["R"].sum():,.0f}</p>',
+                    unsafe_allow_html=True,
+                )
+            with col5:
+                st.markdown(
+                    f'<p style="font-size: {heading_font_size}; color: #555;">Wickets</p>'
+                    f'<p style="font-size: {stat_font_size}; color: #000;">{player_data["W"].sum():,.0f}</p>',
+                    unsafe_allow_html=True,
+                )
+            with col6:
+                st.markdown(
+                    f'<p style="font-size: {heading_font_size}; color: #555;">Economy</p>'
+                    f'<p style="font-size: {stat_font_size}; color: #000;">{round(player_data["Eco"].mean(), 2)}</p>',
+                    unsafe_allow_html=True,
+                )
+            with col7:
+                st.markdown(
+                    f'<p style="font-size: {heading_font_size}; color: #555;">Wides</p>'
+                    f'<p style="font-size: {stat_font_size}; color: #000;">{player_data["WD"].sum():,.0f}</p>',
+                    unsafe_allow_html=True,
+                )
+            with col8:
+                st.markdown(
+                    f'<p style="font-size: {heading_font_size}; color: #555;">No Balls</p>'
+                    f'<p style="font-size: {stat_font_size}; color: #000;">{player_data["NB"].sum():,.0f}</p>',
+                    unsafe_allow_html=True,
+                )
+        else:
+            st.markdown(
+                "<p style='font-size: 16px; color: #555;'>This player has not bowled in any match.</p>",
+                unsafe_allow_html=True,
+            )
 
 
-
-
-    # 1. Runs per Match
-    fig = go.Figure()
-    
-    match_numbers = list(range(1, len(player_data) + 1))  
-    
-    # Add Bar chart
-    fig.add_trace(
-        go.Bar(
-            x=match_numbers, 
-            y=player_data['Runs'],
-            name="Runs",
-            text=player_data['Runs'],
-            hovertemplate="Match: %{x}<br>Runs: %{y}<extra></extra>",
-            opacity=0.3,
-            marker_color='skyblue'
-        )
-    )
 
     
 col1, col2, col3 = st.columns(3) 
@@ -381,27 +418,7 @@ with col2:
 with col3:
     team_analysis = st.button("Team Analysis")
 
-def calculate_batsman_points_per_match(player_data):
-    points_per_match = []
-    for index, row in player_data.iterrows():
-        total_runs = row['Runs']
-        total_4s = row['4s']
-        total_6s = row['6s']
-        player_points = total_runs
-        
-  
-        if total_runs >= 30:
-            player_points += 5
-        if total_runs >= 50:
-            player_points += 10
-        
-    
-        player_points += total_4s * 1  
-        player_points += total_6s * 2  
-        
-        points_per_match.append(player_points)
-    
-    return points_per_match
+
 
 # Batting Analysis
 # Batting Analysis
@@ -551,33 +568,7 @@ if batting_button:
     st.plotly_chart(fig)
 
 
-def calculate_bowler_points_per_match(player_data):
-    points_per_match = []
-    for index, row in player_data.iterrows():
-        wickets = row['W']
-        maidens = row['M']
-        economy = row['Eco']  # Assuming you have an 'Eco' column for economy rate
-        player_points = 0
-        
-        # Points for wickets
-        player_points += wickets  # 1 point per wicket
-        if wickets >= 3:
-            player_points += 5  # Additional 5 points for 3 wickets
-        if wickets >= 5:
-            player_points += 10  # Additional 10 points for 5 wickets
-        
-        # Points for maidens
-        player_points += maidens * 5  # 5 points for each maiden
-        
-        # Points for economy
-        if economy <= 3:
-            player_points += 2  # 2 points for economy <= 3
-        if economy > 8:
-            player_points += 2  # 2 points for economy > 8
-        
-        points_per_match.append(player_points)
-    
-    return points_per_match
+
 
 if bowling_button:
     # Filter data for the selected player
