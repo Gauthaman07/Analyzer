@@ -215,23 +215,40 @@ st.markdown(
 
 
 with st.sidebar:
-    # Display Brand Name
     st.title("Crickonnect")
     st.write("Knock 'em out!")
     
-    # File uploader
-    uploaded_file = st.file_uploader("", type=["csv"], key="file-upload", label_visibility="hidden")
+    # Google Sheets Configuration
+    SHEET_ID = "1hqTg8XVzCIbXgsq2fmZoN1ffv2-hOdtD3SPJoE64lA0"
+    SHEET_NAME = "Ybccdata"
+    url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={SHEET_NAME}"
 
-    # File upload status
-    if uploaded_file:
-        st.success("File uploaded successfully!")
+    @st.cache_data(ttl="5m")  # Refresh every 5 minutes
+    def load_data():
+        try:
+            return pd.read_csv(url)
+        except Exception as e:
+            st.error(f"Error loading data: {str(e)}")
+            return None
+
+    # Add refresh button
+    if st.button("🔄 Refresh Data", key="refresh-button"):
+        st.cache_data.clear()
+        st.rerun()
+
+    # Load data
+    data = load_data()
+
+    # Data load status
+    if data is not None:
+        st.success("Data loaded successfully!")
     else:
-        st.warning("Please upload a CSV file to proceed.")
+        st.error("Unable to load data. Please check the connection.")
 
 # Check if file is uploaded
-if uploaded_file:
+if data is not None:
     # Load data
-    data = pd.read_csv(uploaded_file)
+    
 
     # Player selection
     players = data['Player'].unique()
@@ -276,7 +293,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Stats expander section
-if uploaded_file and not player_data.empty:
+if data is not None and not player_data.empty:
     with st.expander("Stats", expanded=True):
         # Batting performance
         points_per_match = calculate_batsman_points_per_match(player_data)
