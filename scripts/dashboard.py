@@ -3,6 +3,7 @@ import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import os
 
 
 
@@ -111,8 +112,19 @@ st.set_page_config(
 
 
 
-# Load Data
-st.markdown("<h1 style='color: black; font-size:36px;'>Young Blood Cricket Club</h1>", unsafe_allow_html=True)
+
+
+# Get the absolute path to the assets directory
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+image_path = os.path.join(parent_dir, "assets", "ybcclogo.jpg")
+
+# Create columns for logo and title
+col1, col2 = st.columns([1, 6])
+with col1:
+    st.image(image_path, width=60)
+with col2:
+    st.markdown("<h1 style='color: black; font-size:36px; margin-top: 10px;'>Young Blood Cricket Club</h1>", unsafe_allow_html=True)
 # st.subheader("Insights That Sharpen the Edge")
 
 
@@ -200,9 +212,9 @@ st.markdown(
         border: 1px solid white !important;
         border-radius: 40px !important;
     }
-    .st-c8 {
-        box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px !important;
-    }
+    # .st-c8 {
+    #     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px !important;
+    # }
     .st-emotion-cache-ocsh0s {
         margin-top: 50px !important;
         width: 340px !important;
