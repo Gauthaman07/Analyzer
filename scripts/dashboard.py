@@ -101,7 +101,33 @@ def calculate_bowler_points_per_match(player_data):
     
     return points_per_match
 
-
+def calculate_total_bowler_points(player_data):
+    total_points = 0
+    for index, row in player_data.iterrows():
+        wickets = row['W']
+        maidens = row['M']
+        economy = row['Eco']
+        match_points = 0
+        
+        # Points for wickets
+        match_points += wickets  # 1 point per wicket
+        if wickets >= 3:
+            match_points += 5  # Additional 5 points for 3 wickets
+        if wickets >= 5:
+            match_points += 10  # Additional 10 points for 5 wickets
+        
+        # Points for maidens
+        match_points += maidens * 5  # 5 points for each maiden
+        
+        # Points for economy
+        if economy <= 3:
+            match_points += 2  # 2 points for economy <= 3
+        if economy > 8:
+            match_points += 2  # 2 points for economy > 8
+        
+        total_points += match_points
+    
+    return total_points
 
 st.set_page_config(
     page_title="Analyzer by Crickonnect",
@@ -373,9 +399,11 @@ if data is not None and not player_data.empty:
         st.markdown("---")
 
         # Bowling Performance
-        if player_data["O"].sum() > 0:
+        if player_data["O"].sum() > 0:  # Check if player has bowled
+            bowling_points = calculate_total_bowler_points(player_data)
             st.markdown(
-                "<h3 style='font-size: 18px; color: #27ae60;'>With the ball</h3>",
+                f"<h3 style='font-size: 18px; color: #27ae60;'>With the ball</h3>"
+                f"<p style='font-size: 16px; color: #27ae60;'>Total Points: {bowling_points}</p>",
                 unsafe_allow_html=True,
             )
 
