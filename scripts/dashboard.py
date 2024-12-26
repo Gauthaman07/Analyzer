@@ -124,7 +124,7 @@ col1, col2 = st.columns([1, 6])
 with col1:
     st.image(image_path, width=60)
 with col2:
-    st.markdown("<h1 style='color: black; font-size:36px; margin-top: 10px;'>Young Blood Cricket Club</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='color: black; font-size:36px; padding-top:0px;'>Young Blood Cricket Club</h1>", unsafe_allow_html=True)
 # st.subheader("Insights That Sharpen the Edge")
 
 
@@ -159,10 +159,12 @@ st.markdown(
 
     /* Sidebar button color */
     .stSidebar .stButton button {
-        background-color: #FF5733;  /* Button background color */
-        color: white;  /* Button text color */
+        background-color: white;  /* Button background color */
+        color: black;  /* Button text color */
         border-radius: 5px;  /* Rounded corners for buttons */
         padding: 10px;
+        width:100%;
+        margin-top: 60px;
     }
     .st-emotion-cache-1mw54nq p{
         color: red;
