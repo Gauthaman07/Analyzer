@@ -79,25 +79,27 @@ def calculate_bowler_points_per_match(player_data):
         wickets = row['W']
         maidens = row['M']
         economy = row['Eco']  # Assuming you have an 'Eco' column for economy rate
-        player_points = 0
+        match_points = 0  # Initialize match_points for each match
         
         # Points for wickets
-        player_points += wickets  # 1 point per wicket
+        match_points += wickets * 10  # 10 points for each wicket
+        
+        # Additional points based on the number of wickets
         if wickets >= 3:
-            player_points += 5  # Additional 5 points for 3 wickets
+            match_points += 5  # Additional 5 points for taking 3 or more wickets
         if wickets >= 5:
-            player_points += 10  # Additional 10 points for 5 wickets
+            match_points += 10  # Additional 10 points for taking 5 or more wickets
         
         # Points for maidens
-        player_points += maidens * 5  # 5 points for each maiden
+        match_points += maidens * 5  # 5 points for each maiden
         
         # Points for economy
         if economy <= 3:
-            player_points += 2  # 2 points for economy <= 3
-        if economy > 8:
-            player_points += 2  # 2 points for economy > 8
+            match_points += 2  # 2 points for economy <= 3
+        elif economy > 8:
+            match_points -= 2  # -2 points for economy > 8
         
-        points_per_match.append(player_points)
+        points_per_match.append(match_points)  # Append the total points for the match
     
     return points_per_match
 
@@ -110,11 +112,12 @@ def calculate_total_bowler_points(player_data):
         match_points = 0
         
         # Points for wickets
-        match_points += wickets  # 1 point per wicket
-        if wickets >= 3:
-            match_points += 5  # Additional 5 points for 3 wickets
-        if wickets >= 5:
-            match_points += 10  # Additional 10 points for 5 wickets
+        if wickets == 1:
+            match_points += 10  # 10 points for 1 wicket
+        elif wickets == 3:
+            match_points += 35  # 35 points for 3 wickets
+        elif wickets >= 5:
+            match_points += 65 # Additional 10 points for 5 wickets
         
         # Points for maidens
         match_points += maidens * 5  # 5 points for each maiden
@@ -407,7 +410,7 @@ if data is not None and not player_data.empty:
                 unsafe_allow_html=True,
             )
 
-            col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
+            col1, col2, col3, col4, col5, col6, col7, col8, col9 = st.columns(9)
 
             with col1:
                 st.markdown(
@@ -457,6 +460,12 @@ if data is not None and not player_data.empty:
                     f'<p style="font-size: {stat_font_size}; color: #000;">{player_data["NB"].sum():,.0f}</p>',
                     unsafe_allow_html=True,
                 )
+            with col9:
+                st.markdown(
+                    f'<p style="font-size: {heading_font_size}; color: #555;">Catches</p>'
+                    f'<p style="font-size: {stat_font_size}; color: #000;">{player_data["Catches"].sum():,.0f}</p>',
+                    unsafe_allow_html=True,
+                )    
         else:
             st.markdown(
                 "<p style='font-size: 16px; color: #555;'>This player has not bowled in any match.</p>",
